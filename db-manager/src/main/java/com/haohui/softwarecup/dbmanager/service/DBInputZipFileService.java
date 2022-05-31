@@ -16,7 +16,8 @@ import java.util.zip.ZipInputStream;
 @Service
 public class DBInputZipFileService {
     private final NewsDao newsDao;
-
+    private final Random random=new Random();
+    private final LocalDateTime threeYearsAgo = LocalDateTime.of(2019, 5, 31, 0, 0, 0);
     public DBInputZipFileService(NewsDao newsDao) {
         this.newsDao = newsDao;
     }
@@ -28,11 +29,8 @@ public class DBInputZipFileService {
      * @param type 新闻类型
      */
     private void saveInDB(String title,StringBuffer content,String type){
-        Random random = new Random();
         // 随机一个3年内的时间
         int aSecondInThreeYears = random.nextInt(3 * 365 * 24 * 60 * 60);
-
-        LocalDateTime threeYearsAgo = LocalDateTime.of(2019, 5, 31, 0, 0, 0);
 
         News news = new News(title, content.toString(), type, threeYearsAgo.plusSeconds(aSecondInThreeYears));
         Mono<News> newsMono = newsDao.save(news);
