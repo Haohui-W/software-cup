@@ -16,6 +16,8 @@ public class DBManagerApplication {
             dbInputZipFileService.inputAndSave();
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }finally {
+            System.out.println("存储"+dbInputZipFileService.getCountSave()+"个新闻。");
         }
     }
 }
