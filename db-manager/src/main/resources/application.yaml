@@ -1,5 +1,3 @@
 spring:
-  r2dbc:
-    url: "r2dbc:mysql://xxxx:3306/software_cup"
-    username: "xxxx"
-    password: "xxxx"
+  profiles:
+    active: db
