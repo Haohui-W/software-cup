@@ -18,6 +18,16 @@ public class DBInputZipFileService {
     private final NewsDao newsDao;
     private final Random random=new Random();
     private final LocalDateTime threeYearsAgo = LocalDateTime.of(2019, 5, 31, 0, 0, 0);
+    private int countSave=0;
+
+    /**
+     * 获取存储的新闻个数
+     * @return 新闻个数
+     */
+    public int getCountSave() {
+        return countSave;
+    }
+
     public DBInputZipFileService(NewsDao newsDao) {
         this.newsDao = newsDao;
     }
@@ -35,6 +45,7 @@ public class DBInputZipFileService {
         News news = new News(title, content.toString(), type, threeYearsAgo.plusSeconds(aSecondInThreeYears));
         Mono<News> newsMono = newsDao.save(news);
         newsMono.block();
+        countSave++;
     }
 
     /**
