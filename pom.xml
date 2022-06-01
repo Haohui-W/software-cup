@@ -4,6 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <modules>
         <module>db-manager</module>
+        <module>news-api</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
