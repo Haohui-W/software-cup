@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 */src/main/**/application-db.yaml
+*/src/main/**/application-db.yml
 ### STS ###
 .apt_generated
 .classpath
