@@ -2,6 +2,8 @@ package com.haohui.softwarecup.dbmanager.service;
 
 import com.haohui.softwarecup.dbmanager.dao.NewsDao;
 import com.haohui.softwarecup.dbmanager.pojo.News;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -62,6 +64,9 @@ public class DBInputZipFileService {
         countSave++;
     }
 
+    @Value("${app.zipFileLocation}")
+    private Resource resource;
+
     /**
      * 读取压缩包的每个zipEntry
      * 如果是新闻文件，第一行作为标题，后面作为内容，
@@ -70,7 +75,8 @@ public class DBInputZipFileService {
      * @throws Exception 异常
      */
     public void inputAndSave() throws Exception {
-        try (FileInputStream fileInputStream = new FileInputStream("D:\\Files\\软件杯\\THUCNews.zip"); BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream); ZipInputStream zipInputStream = new ZipInputStream(bufferedInputStream, StandardCharsets.UTF_8)) {
+        if(!resource.exists()) throw new RuntimeException("文件不存在");
+        try(ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(resource.getInputStream()),StandardCharsets.UTF_8)) {
 
             ZipEntry nextEntry;
 
@@ -103,7 +109,7 @@ public class DBInputZipFileService {
                     // 存储到数据库中
                     saveInDB(title, content, type);
                 }
-                Thread.sleep(1000);
+//                Thread.sleep(1000);
             }
         }
     }
