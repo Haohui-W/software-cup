@@ -1,3 +1,7 @@
 spring:
   profiles:
     active: db
+  jackson:
+    default-property-inclusion: non_null
+app:
+  newsNum: 41796

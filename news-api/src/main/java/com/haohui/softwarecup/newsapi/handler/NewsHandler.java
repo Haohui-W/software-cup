@@ -2,6 +2,7 @@ package com.haohui.softwarecup.newsapi.handler;
 
 import com.haohui.softwarecup.newsapi.dao.NewsDao;
 import com.haohui.softwarecup.newsapi.vo.ResultVO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -33,6 +34,9 @@ public class NewsHandler {
                 .map(e -> ResultVO.success(Map.of("news", e)));
     }
 
+    @Value("${app.newsNum}")
+    private int newsNum;
+
     /**
      * 随机获取num个新闻
      * num必须不大于100
@@ -48,7 +52,7 @@ public class NewsHandler {
         ArrayList<Long> newsIds = new ArrayList<>();
         // 生成num个新闻id
         while (num-->0){
-            newsIds.add((long)random.nextInt(836075));
+            newsIds.add((long)random.nextInt(newsNum));
         }
         return newsDao.getNRandomNews(newsIds)
                 .collect(Collectors.toList())
@@ -74,10 +78,10 @@ public class NewsHandler {
         if (num>100){
             return Mono.just(ResultVO.error(400,"一次性获取的数量不能大于100"));
         }
-        Mono<ResultVO> resultVO=null;
+        Mono<ResultVO> resultVO;
         try {
-            resultVO = newsDao.getNewsByPublishedTimeAfter(
-                    LocalDateTime.of(year, mouth, day, 0, 0), num)
+            resultVO = newsDao
+                    .getNewsByPublishedTimeAfter(LocalDateTime.of(year, mouth, day, 0, 0), num)
                     .collect(Collectors.toList())
                     .map(
                             e -> ResultVO.success(
