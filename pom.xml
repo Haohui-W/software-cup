@@ -5,6 +5,7 @@
     <modules>
         <module>db-manager</module>
         <module>news-api</module>
+        <module>software-cup-api</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
