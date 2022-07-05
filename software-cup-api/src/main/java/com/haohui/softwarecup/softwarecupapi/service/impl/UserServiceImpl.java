@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
-    UserDao userDao;
+    private UserDao userDao;
 
     public UserServiceImpl(UserDao userDao) {
         this.userDao = userDao;
@@ -21,13 +21,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<Integer> save(User user) {
+//        return userDao.save(user);
         return userDao.save(
                 user.getUuid().toString(),
                 user.getNickName(),
                 user.getUsername(),
                 user.getUserPassword(),
                 JSON.toJSONString(user.getKeyWords()==null?new ArrayList<String>():user.getKeyWords()),
-                user.getBirthDay()==null?LocalDate.of(1970,1,1).toString():user.getBirthDay().toString()
+                user.getBirthDay()
         );
     }
 

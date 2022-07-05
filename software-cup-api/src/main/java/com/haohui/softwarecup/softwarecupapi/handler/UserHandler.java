@@ -31,9 +31,10 @@ public class UserHandler {
         if (user.getUuid() == null) {
             UUID uuid = UUID.randomUUID();
             serverHttpResponse.getHeaders().add("uuid", uuid.toString());
-            Mono<Integer> userMono = userService.save(User.builder().uuid(uuid).build());
-            return userMono.map(u -> {
-                if (u == 1) {
+            user.setUuid(uuid);
+            Mono<Integer> userMono = userService.save(user);
+            return userMono.map(i -> {
+                if (i==1) {
                     return ResultVO.ok(Map.of("info", "登录成功"));
                 }
                 return ResultVO.innerErr("登录失败");
