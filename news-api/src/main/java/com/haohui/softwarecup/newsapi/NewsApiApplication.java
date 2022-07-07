@@ -13,18 +13,4 @@ public class NewsApiApplication {
     public static void main(String[] args) {
         SpringApplication.run(NewsApiApplication.class, args);
     }
-
-    @Bean
-    @Order(0)
-    public CorsWebFilter corsFilter() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("*");
-        config.addAllowedMethod("*");
-        config.addAllowedHeader("*");
-        config.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource configSource
-                = new UrlBasedCorsConfigurationSource();
-        configSource.registerCorsConfiguration("/api/**", config);
-        return new CorsWebFilter(configSource);
-    }
 }

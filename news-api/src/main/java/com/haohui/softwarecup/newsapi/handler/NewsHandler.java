@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/news")
+@CrossOrigin
 public class NewsHandler {
 
     private final NewsDao newsDao;

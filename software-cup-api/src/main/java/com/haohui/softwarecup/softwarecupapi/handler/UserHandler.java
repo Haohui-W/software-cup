@@ -5,10 +5,7 @@ import com.haohui.softwarecup.softwarecupapi.service.UserService;
 import com.haohui.softwarecup.softwarecupapi.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -16,6 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin
 public class UserHandler {
 
 

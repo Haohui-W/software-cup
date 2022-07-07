@@ -1,7 +1,5 @@
 package com.haohui.softwarecup.softwarecupapi.handler;
 
-import com.haohui.softwarecup.softwarecupapi.dao.AppConfigDao;
-import com.haohui.softwarecup.softwarecupapi.pojo.AppConfig;
 import com.haohui.softwarecup.softwarecupapi.pojo.News;
 import com.haohui.softwarecup.softwarecupapi.service.NewsService;
 import com.haohui.softwarecup.softwarecupapi.service.UserService;
@@ -15,6 +13,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/news")
+@CrossOrigin
 public class NewsHandler {
 
     private final NewsService newsService;
