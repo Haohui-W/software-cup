@@ -7,13 +7,12 @@ import com.haohui.softwarecup.softwarecupapi.service.UserService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private UserDao userDao;
+    private final UserDao userDao;
 
     public UserServiceImpl(UserDao userDao) {
         this.userDao = userDao;
@@ -21,7 +20,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<Integer> save(User user) {
-//        return userDao.save(user);
         return userDao.save(
                 user.getUuid().toString(),
                 user.getNickName(),

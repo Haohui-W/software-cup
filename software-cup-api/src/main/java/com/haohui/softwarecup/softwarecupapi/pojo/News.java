@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 public class News {
     @Id
-    private long nid;
+    private Long nid;
     private String title;
     private String content;
     private String type;
