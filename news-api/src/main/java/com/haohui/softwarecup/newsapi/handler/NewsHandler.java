@@ -53,14 +53,8 @@ public class NewsHandler {
         if (num>100){
             return Mono.just(ResultVO.error(400,"一次性获取的数量不能大于100"));
         }
-        Random random = new Random();
-        ArrayList<Long> newsIds = new ArrayList<>();
-        // 生成num个新闻id
-        while (num-->0){
-            newsIds.add((long)random.nextInt(newsNum));
-        }
-        return newsDao.getNRandomNews(newsIds)
-                .collect(Collectors.toList())
+        return newsDao.getNRandomNews(LocalDateTime.now(),num)
+                .collectList()
                 .map(
                         e -> ResultVO.success(
                                 Map.of("news", e)
@@ -110,7 +104,8 @@ public class NewsHandler {
         if(!newsType.contains(type)) {
             return Mono.just(ResultVO.error(400,"新闻的类型必须为"+newsType));
         }
-        return newsDao.getNewsByType(type,LocalDateTime.now(),num).collectList()
+        return newsDao.getNewsByType(type,LocalDateTime.now(),num)
+                .collectList()
                 .map(e-> ResultVO.success(Map.of("news",e)));
     }
 
