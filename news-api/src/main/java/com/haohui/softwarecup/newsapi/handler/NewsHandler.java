@@ -110,15 +110,8 @@ public class NewsHandler {
         if(!newsType.contains(type)) {
             return Mono.just(ResultVO.error(400,"新闻的类型必须为"+newsType));
         }
-        Random random = new Random();
-        int i = random.nextInt(newsNum);
-        int j = random.nextInt(newsNum);
-        int t = Math.max(i, j);
-        i=Math.min(i,j);
-        j=t;
-        Flux<News> newsByType = newsDao.getNewsByType(type,i,j,num,LocalDateTime.now());
-        return newsByType.collectList()
-                .map(e-> ResultVO.success(Map.of("newsList",e)));
+        return newsDao.getNewsByType(type,LocalDateTime.now(),num).collectList()
+                .map(e-> ResultVO.success(Map.of("news",e)));
     }
 
 }

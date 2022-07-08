@@ -29,6 +29,6 @@ public interface NewsDao extends R2dbcRepository<News,Long> {
 
 
 
-    @Query("SELECT * FROM software_mock.news WHERE type=:type AND nid >=:i AND nid <= :j AND published_time<= :time LIMIT :num")
-    Flux<News> getNewsByType(String type,int i,int j,int num,LocalDateTime time);
+    @Query("SELECT * FROM software_mock.news WHERE type=:type AND published_time<= :time ORDER BY rand() LIMIT :num")
+    Flux<News> getNewsByType(String type,LocalDateTime time,int num);
 }
