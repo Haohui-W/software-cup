@@ -39,9 +39,6 @@ public class NewsHandler {
                 .map(e -> ResultVO.success(Map.of("news", e)));
     }
 
-    @Value("${app.newsNum}")
-    private int newsNum;
-
     /**
      * 随机获取num个新闻
      * num必须不大于100
