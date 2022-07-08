@@ -1,14 +1,17 @@
 package com.haohui.softwarecup.newsapi.handler;
 
 import com.haohui.softwarecup.newsapi.dao.NewsDao;
+import com.haohui.softwarecup.newsapi.pojo.News;
 import com.haohui.softwarecup.newsapi.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/news")
 @CrossOrigin
 public class NewsHandler {
+    private static final List<String> newsType = List.of("体育", "娱乐", "家居", "彩票", "房产", "教育", "时尚", "时政", "星座", "游戏", "社会", "科技", "股票", "财经");
 
     private final NewsDao newsDao;
 
@@ -97,4 +101,24 @@ public class NewsHandler {
         return resultVO;
 
     }
+
+    @GetMapping("/{type}/{num}")
+    public Mono<ResultVO> getNewsByType(@PathVariable int num, @PathVariable String type){
+        if (num>100){
+            return Mono.just(ResultVO.error(400,"一次性获取的数量不能大于100"));
+        }
+        if(!newsType.contains(type)) {
+            return Mono.just(ResultVO.error(400,"新闻的类型必须为"+newsType));
+        }
+        Random random = new Random();
+        int i = random.nextInt(newsNum);
+        int j = random.nextInt(newsNum);
+        int t = Math.max(i, j);
+        i=Math.min(i,j);
+        j=t;
+        Flux<News> newsByType = newsDao.getNewsByType(type,i,j,num,LocalDateTime.now());
+        return newsByType.collectList()
+                .map(e-> ResultVO.success(Map.of("newsList",e)));
+    }
+
 }

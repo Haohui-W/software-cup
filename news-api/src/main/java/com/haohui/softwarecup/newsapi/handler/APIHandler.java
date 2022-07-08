@@ -20,7 +20,9 @@ public class APIHandler {
                 "根据id获取一个新闻<br />" +
                 "<br />" +
                 "/api/news/after/{year}/{mouth}/{day}/{num}<br />" +
-                "获取给定时间之后的num个新闻";
+                "获取给定时间之后的num个新闻<br />"+
+                "/api/news/{type}/{num}<br />"+
+                "获取最多num条发布时间小于当前时间的对应类型的新闻";
         return Mono.just(s);
     }
 }
