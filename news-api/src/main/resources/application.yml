@@ -1,5 +1,0 @@
-spring:
-  profiles:
-    active: db
-  jackson:
-    default-property-inclusion: non_null
