@@ -17,4 +17,5 @@ public class News {
     private String content;
     private String type;
     private LocalDateTime publishedTime;
+    private String keyWords;
 }

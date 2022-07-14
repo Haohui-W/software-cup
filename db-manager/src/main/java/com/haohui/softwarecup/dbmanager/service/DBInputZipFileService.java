@@ -2,16 +2,15 @@ package com.haohui.softwarecup.dbmanager.service;
 
 import com.haohui.softwarecup.dbmanager.dao.NewsDao;
 import com.haohui.softwarecup.dbmanager.pojo.News;
+import com.haohui.softwarecup.dbmanager.utils.UtilBean;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,12 +21,18 @@ import java.util.zip.ZipInputStream;
 @Slf4j
 public class DBInputZipFileService {
     private final NewsDao newsDao;
-    private final Random random = new Random();
-    private final LocalDateTime atime = LocalDateTime.of(2022, 6, 1, 0, 0, 0);
-    private int countSave = 0;
+
+    private final UtilBean utilBean;
+
+    private final LocalDateTime aTime;
 
     private final Map<String, List<News>> map = new HashMap<>();
-    {
+
+
+    public DBInputZipFileService(NewsDao newsDao, UtilBean utilBean) {
+        this.newsDao = newsDao;
+        this.utilBean = utilBean;
+        this.aTime = LocalDateTime.parse(utilBean.getATimeStr());
         map.put("体育",new LinkedList<>());
         map.put("娱乐",new LinkedList<>());
         map.put("家居",new LinkedList<>());
@@ -43,37 +48,11 @@ public class DBInputZipFileService {
         map.put("股票",new LinkedList<>());
         map.put("财经",new LinkedList<>());
     }
-    /**
-     * 获取存储的新闻个数
-     *
-     * @return 新闻个数
-     */
-    public int getCountSave() {
-        return countSave;
-    }
-
-    public DBInputZipFileService(NewsDao newsDao) {
-        this.newsDao = newsDao;
-    }
-
-    private void saveInDB(News news) {
-
-        // 调用newsDao存储下这个新闻
-        Mono<News> newsMono = newsDao.save(news);
-
-        // 让mono产生订阅，否则插入不生效。
-        newsMono.block();
-
-        // 保存成功之后，保存的新闻数量+1
-        countSave++;
-    }
-
-    @Value("${app.zipFileLocation}")
-    private Resource resource;
 
     public void inputAndSave() throws Exception {
+        Resource resource = utilBean.getResource();
         if (!resource.exists()) throw new RuntimeException("文件不存在");
-        try (ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(resource.getInputStream()), StandardCharsets.UTF_8)) {
+        try (ZipInputStream zipInputStream = new ZipInputStream(resource.getInputStream())) {
 
             ZipEntry nextEntry;
 
@@ -112,7 +91,7 @@ public class DBInputZipFileService {
                         .title(title)
                         .content(content)
                         .type(type)
-                        .publishedTime(atime.plusSeconds(random.nextInt(5 * 30 * 24 * 60 * 60)))
+                        .publishedTime(aTime.plusSeconds(utilBean.getRandom().nextInt(5 * 30 * 24 * 60 * 60)))
                         .build();
 
                 // 先将所有的新闻存入内存中
@@ -121,13 +100,13 @@ public class DBInputZipFileService {
 //                Thread.sleep(1000);
             }
             // 每种类型的新闻只留下二十分之一
-            map.forEach((k,v)->{
-                map.put(k,v.stream().limit(v.size()/20).collect(Collectors.toList()));
-            });
-            // 将所以新闻存入数据库中
-            map.forEach((k,v)->{
-                v.forEach(this::saveInDB);
-            });
+            map.forEach((k,v)-> map.put(k,v.stream().limit(v.size()/20).collect(Collectors.toList())));
+
+            // 将所有新闻存入数据库中
+            List<News> newsList = map.values().stream().flatMap(Collection::stream)
+                    .collect(Collectors.toList());
+            Flux<News> newsFlux = newsDao.saveAll(newsList);
+            newsFlux.count().block();
         }
     }
 }
