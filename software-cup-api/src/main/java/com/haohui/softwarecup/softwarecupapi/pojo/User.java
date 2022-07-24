@@ -1,11 +1,10 @@
 package com.haohui.softwarecup.softwarecupapi.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -15,7 +14,7 @@ public class User {
     private UUID uuid;
     private String nickName;
     private String username;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String userPassword;
-    private List<String> keyWords;
-    private LocalDate birthDay;
+    private String keyWords;
 }
