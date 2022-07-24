@@ -17,4 +17,5 @@ public class News {
     private String type;
     private LocalDateTime publishedTime;
     private List<String> keyWords;
+    private Long likes;
 }
